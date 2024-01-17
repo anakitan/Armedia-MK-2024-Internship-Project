@@ -11,23 +11,22 @@ public class Person {
     @GeneratedValue
     private Long id;
 
-    private String given_name;
+    private String givenName;
 
-    private String family_name;
+    private String lastName;
 
     @Temporal(TemporalType.DATE)
-    private Date birth_of_date;
+    private Date dateOfBirth;
 
-    private String place_of_birth;
+    private String placeOfBirth;
 
     public Person() {}
-    
-    public Person(Long id, String given_name, String family_name, Date birth_of_date, String place_of_birth) {
-        this.id = id;
-        this.given_name = given_name;
-        this.family_name = family_name;
-        this.birth_of_date = birth_of_date;
-        this.place_of_birth = place_of_birth;
+
+    public Person(String givenName, String lastName, Date dateOfBirth, String placeOfBirth) {
+        this.givenName = givenName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.placeOfBirth = placeOfBirth;
     }
 
     public Long getId() {
@@ -38,35 +37,35 @@ public class Person {
         this.id = id;
     }
 
-    public String getGiven_name() {
-        return given_name;
+    public String getGivenName() {
+        return givenName;
     }
 
-    public void setGiven_name(String given_name) {
-        this.given_name = given_name;
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
     }
 
-    public String getFamily_name() {
-        return family_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setFamily_name(String family_name) {
-        this.family_name = family_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
-    public Date getBirth_of_date() {
-        return birth_of_date;
+    public Date getDateOfBirth() {
+        return dateOfBirth;
     }
 
-    public void setBirth_of_date(Date birth_of_date) {
-        this.birth_of_date = birth_of_date;
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
-    public String getPlace_of_birth() {
-        return place_of_birth;
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
     }
 
-    public void setPlace_of_birth(String place_of_birth) {
-        this.place_of_birth = place_of_birth;
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
     }
 }

@@ -11,8 +11,11 @@ import java.util.List;
 @Service
 public class PersonServiceImpl implements PersonService {
 
-    @Autowired
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
+
+    public PersonServiceImpl(PersonRepository personRepository) {
+        this.personRepository = personRepository;
+    }
 
     @Override
     public Person createPerson(Person person) {
@@ -23,7 +26,6 @@ public class PersonServiceImpl implements PersonService {
     public List<Person> listAllPersons() {
         return this.personRepository.findAll();
     }
-
 
     @Override
     public Person getPersonById(Long id) {
