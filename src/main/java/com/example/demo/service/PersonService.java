@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PersonService {
 
-    Person createPerson(Person person);
+    Optional<Person> createPerson(Person person);
 
     List<Person> listAllPersons();
 
@@ -16,4 +16,6 @@ public interface PersonService {
     List<Person> findByEmail(String email);
 
     List<Person> findByStreetAddress(String streetAddress);
+
+    Optional<Person> getPersonDetails(Long personId);
 }
