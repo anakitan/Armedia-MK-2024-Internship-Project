@@ -2,31 +2,50 @@ package com.example.demo.models;
 
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Person {
 
     @Id
-    @GeneratedValue
+    @Column(name = "person_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String givenName;
 
     private String lastName;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     private String placeOfBirth;
 
-    public Person() {}
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private List<PostalAddress> postalAddresses;
 
-    public Person(String givenName, String lastName, Date dateOfBirth, String placeOfBirth) {
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private List<ContactMethod> contactMethods;
+
+    public Person() {
+    }
+
+    public Person(String givenName, String lastName, LocalDate dateOfBirth, String placeOfBirth) {
         this.givenName = givenName;
         this.lastName = lastName;
         this.dateOfBirth = dateOfBirth;
         this.placeOfBirth = placeOfBirth;
+    }
+
+    public Person(String givenName, String lastName, LocalDate dateOfBirth, String placeOfBirth, List<PostalAddress> postalAddresses, List<ContactMethod> contactMethods) {
+        this.givenName = givenName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.placeOfBirth = placeOfBirth;
+        this.postalAddresses = postalAddresses;
+        this.contactMethods = contactMethods;
     }
 
     public Long getId() {
@@ -53,11 +72,11 @@ public class Person {
         this.lastName = lastName;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -67,5 +86,21 @@ public class Person {
 
     public void setPlaceOfBirth(String placeOfBirth) {
         this.placeOfBirth = placeOfBirth;
+    }
+
+    public List<PostalAddress> getPostalAddresses() {
+        return postalAddresses;
+    }
+
+    public void setPostalAddresses(List<PostalAddress> postalAddresses) {
+        this.postalAddresses = postalAddresses;
+    }
+
+    public List<ContactMethod> getContactMethods() {
+        return contactMethods;
+    }
+
+    public void setContactMethods(List<ContactMethod> contactMethods) {
+        this.contactMethods = contactMethods;
     }
 }
