@@ -33,9 +33,20 @@ public class PersonController {
         Person person = this.personService.getPersonById(id);
         if (person != null) {
             return new ResponseEntity<>(person, HttpStatus.OK);
-        }
-        else {
+        } else {
             return new ResponseEntity<>(person, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/byEmail")
+    public ResponseEntity<List<Person>> getPersonByEmail(@RequestParam String email) {
+        List<Person> persons = this.personService.findByEmail(email);
+        return ResponseEntity.ok().body(persons);
+    }
+
+    @GetMapping("/byStreetAddress")
+    public ResponseEntity<List<Person>> getPersonByStreetAddress(@RequestParam String streetAddress) {
+        List<Person> persons = this.personService.findByStreetAddress(streetAddress);
+        return ResponseEntity.ok().body(persons);
     }
 }

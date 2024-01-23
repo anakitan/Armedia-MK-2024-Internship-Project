@@ -1,13 +1,19 @@
 package com.example.demo.service;
 
 import com.example.demo.models.Person;
-import com.example.demo.service.impl.PersonServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PersonService {
 
-    public Person createPerson(Person person);
-    public List<Person> listAllPersons();
-    public Person getPersonById(Long id);
+    Person createPerson(Person person);
+
+    List<Person> listAllPersons();
+
+    Person getPersonById(Long id);
+
+    List<Person> findByEmail(String email);
+
+    List<Person> findByStreetAddress(String streetAddress);
 }
