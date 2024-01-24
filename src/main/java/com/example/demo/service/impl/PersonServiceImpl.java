@@ -1,8 +1,6 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
-import com.example.demo.models.PostalAddress;
 import com.example.demo.repository.ContactMethodRepository;
 import com.example.demo.repository.PersonRepository;
 import com.example.demo.repository.PostalAddressRepository;
@@ -32,15 +30,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional
-    public Person createPerson(Person person) {
-
-        for (PostalAddress postalAddress : person.getPostalAddresses()) {
-            postalAddress.setPerson(person);
-        }
-        for (ContactMethod contactMethod : person.getContactMethods()) {
-            contactMethod.setPerson(person);
-        }
-        return personRepository.save(person);
+    public Optional<Person> createPerson(Person person) {
+        return Optional.of(this.personRepository.save(person));
     }
 
     @Override
@@ -61,5 +52,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public List<Person> findByStreetAddress(String streetAddress) {
         return this.personRepository.findByStreetAddress(streetAddress);
+    }
+
+    @Override
+    public Optional<Person> getPersonDetails(Long personId) {
+        return this.personRepository.findById(personId);
     }
 }

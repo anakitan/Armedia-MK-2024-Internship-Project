@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/persons")
@@ -18,8 +19,9 @@ public class PersonController {
 
     @PostMapping("/create")
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        Person createdPerson = this.personService.createPerson(person);
-        return new ResponseEntity<>(createdPerson, HttpStatus.CREATED);
+        return this.personService.createPerson(person)
+                .map(p -> ResponseEntity.ok().body(p))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/listAll")
@@ -48,5 +50,14 @@ public class PersonController {
     public ResponseEntity<List<Person>> getPersonByStreetAddress(@RequestParam String streetAddress) {
         List<Person> persons = this.personService.findByStreetAddress(streetAddress);
         return ResponseEntity.ok().body(persons);
+    }
+
+    @GetMapping("/{personId}/details")
+    public ResponseEntity<Person> getPersonDetails(@PathVariable Long personId) {
+        Optional<Person> optionalPerson = this.personService.getPersonDetails(personId);
+
+        return optionalPerson.map(
+                        person -> new ResponseEntity<>(person, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 }

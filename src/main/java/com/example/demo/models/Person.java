@@ -29,25 +29,6 @@ public class Person {
     @JoinColumn(name = "person_id")
     private List<ContactMethod> contactMethods;
 
-    public Person() {
-    }
-
-    public Person(String givenName, String lastName, LocalDate dateOfBirth, String placeOfBirth) {
-        this.givenName = givenName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.placeOfBirth = placeOfBirth;
-    }
-
-    public Person(String givenName, String lastName, LocalDate dateOfBirth, String placeOfBirth, List<PostalAddress> postalAddresses, List<ContactMethod> contactMethods) {
-        this.givenName = givenName;
-        this.lastName = lastName;
-        this.dateOfBirth = dateOfBirth;
-        this.placeOfBirth = placeOfBirth;
-        this.postalAddresses = postalAddresses;
-        this.contactMethods = contactMethods;
-    }
-
     public Long getId() {
         return id;
     }
