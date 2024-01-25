@@ -1,6 +1,8 @@
 package com.example.demo.web;
 
+import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
+import com.example.demo.models.PostalAddress;
 import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,7 +38,7 @@ public class PersonController {
         if (person != null) {
             return new ResponseEntity<>(person, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(person, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -59,5 +61,21 @@ public class PersonController {
         return optionalPerson.map(
                         person -> new ResponseEntity<>(person, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @PutMapping("/{personId}/edit-address")
+    public ResponseEntity<Person> editPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress newAddress) {
+        Optional<Person> updatedPerson = this.personService.editPersonAddress(personId, newAddress);
+
+        return updatedPerson.map(person -> ResponseEntity.ok().body(person))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{personId}/edit-contact")
+    public ResponseEntity<Person> editPersonContactMethod(@PathVariable Long personId, @RequestBody ContactMethod newContactMethod) {
+        Optional<Person> updatedPerson = this.personService.editPersonContactMethod(personId, newContactMethod);
+
+        return updatedPerson.map(person -> ResponseEntity.ok().body(person))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

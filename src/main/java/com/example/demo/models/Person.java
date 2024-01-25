@@ -1,11 +1,19 @@
 package com.example.demo.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Person {
 
     @Id
@@ -13,12 +21,16 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "given_name")
     private String givenName;
 
+    @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
+    @Column(name = "place_of_birth")
     private String placeOfBirth;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -28,60 +40,4 @@ public class Person {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private List<ContactMethod> contactMethods;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getGivenName() {
-        return givenName;
-    }
-
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public String getPlaceOfBirth() {
-        return placeOfBirth;
-    }
-
-    public void setPlaceOfBirth(String placeOfBirth) {
-        this.placeOfBirth = placeOfBirth;
-    }
-
-    public List<PostalAddress> getPostalAddresses() {
-        return postalAddresses;
-    }
-
-    public void setPostalAddresses(List<PostalAddress> postalAddresses) {
-        this.postalAddresses = postalAddresses;
-    }
-
-    public List<ContactMethod> getContactMethods() {
-        return contactMethods;
-    }
-
-    public void setContactMethods(List<ContactMethod> contactMethods) {
-        this.contactMethods = contactMethods;
-    }
 }
