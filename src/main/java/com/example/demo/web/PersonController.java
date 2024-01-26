@@ -7,8 +7,10 @@ import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +21,9 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+    @Validated
     @PostMapping("/create")
-    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+    public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
         return this.personService.createPerson(person)
                 .map(p -> ResponseEntity.ok().body(p))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
@@ -63,17 +66,17 @@ public class PersonController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping("/{personId}/edit-address")
-    public ResponseEntity<Person> editPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress newAddress) {
-        Optional<Person> updatedPerson = this.personService.editPersonAddress(personId, newAddress);
+    @PutMapping("/{personId}/addAddress")
+    public ResponseEntity<Person> addPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress newAddress) {
+        Optional<Person> updatedPerson = this.personService.addPersonAddress(personId, newAddress);
 
         return updatedPerson.map(person -> ResponseEntity.ok().body(person))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{personId}/edit-contact")
-    public ResponseEntity<Person> editPersonContactMethod(@PathVariable Long personId, @RequestBody ContactMethod newContactMethod) {
-        Optional<Person> updatedPerson = this.personService.editPersonContactMethod(personId, newContactMethod);
+    @PutMapping("/{personId}/addContact")
+    public ResponseEntity<Person> addPersonContactMethod(@PathVariable Long personId, @Valid @RequestBody ContactMethod newContactMethod) {
+        Optional<Person> updatedPerson = this.personService.addPersonContactMethod(personId, newContactMethod);
 
         return updatedPerson.map(person -> ResponseEntity.ok().body(person))
                 .orElseGet(() -> ResponseEntity.notFound().build());

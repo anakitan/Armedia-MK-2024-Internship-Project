@@ -21,7 +21,7 @@ public interface PersonService {
 
     Optional<Person> getPersonDetails(Long personId);
 
-    Optional<Person> editPersonAddress(Long personId, PostalAddress newAddress);
+    Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress);
 
-    Optional<Person> editPersonContactMethod(Long personId, ContactMethod contactMethod);
+    Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod);
 }

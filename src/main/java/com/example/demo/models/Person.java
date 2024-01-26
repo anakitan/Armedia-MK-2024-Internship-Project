@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "p_person")
 public class Person {
 
     @Id
@@ -21,16 +23,16 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "given_name")
+    @Column(name = "p_given_name")
     private String givenName;
 
-    @Column(name = "last_name")
+    @Column(name = "p_last_name")
     private String lastName;
 
-    @Column(name = "date_of_birth")
+    @Column(name = "p_date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(name = "place_of_birth")
+    @Column(name = "p_place_of_birth")
     private String placeOfBirth;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -39,5 +41,6 @@ public class Person {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
+    @Valid
     private List<ContactMethod> contactMethods;
 }

@@ -13,23 +13,24 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "p_postal_address")
 public class PostalAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "postal_address_id")
+    @Column(name = "p_postal_address_id")
     private Long id;
 
-    @Column(name = "street_address", unique = true)
+    @Column(name = "p_street_address", unique = true)
     private String streetAddress;
 
-    @Column(name = "city")
+    @Column(name = "p_city")
     private String city;
 
-    @Column(name = "zip")
+    @Column(name = "p_zip")
     private String zip;
 
-    @Column(name = "country")
+    @Column(name = "p_country")
     private String country;
 
     @ManyToOne
