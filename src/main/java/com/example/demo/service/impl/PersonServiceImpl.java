@@ -1,9 +1,9 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
-import com.example.demo.repository.ContactMethodRepository;
+import com.example.demo.models.PostalAddress;
 import com.example.demo.repository.PersonRepository;
-import com.example.demo.repository.PostalAddressRepository;
 import com.example.demo.service.PersonService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +16,8 @@ public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository personRepository;
 
-    private final PostalAddressRepository postalAddressRepository;
-
-    private final ContactMethodRepository contactMethodRepository;
-
-    public PersonServiceImpl(PersonRepository personRepository,
-                             PostalAddressRepository postalAddressRepository,
-                             ContactMethodRepository contactMethodRepository) {
+    public PersonServiceImpl(PersonRepository personRepository) {
         this.personRepository = personRepository;
-        this.postalAddressRepository = postalAddressRepository;
-        this.contactMethodRepository = contactMethodRepository;
     }
 
     @Override
@@ -57,5 +49,23 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Optional<Person> getPersonDetails(Long personId) {
         return this.personRepository.findById(personId);
+    }
+
+    @Override
+    public Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress) {
+        return this.personRepository.findById(personId)
+                .map(person -> {
+                    person.getPostalAddresses().add(newAddress);
+                    return this.personRepository.save(person);
+                });
+    }
+
+    @Override
+    public Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod) {
+        return this.personRepository.findById(personId)
+                .map(person -> {
+                    person.getContactMethods().add(contactMethod);
+                    return this.personRepository.save(person);
+                });
     }
 }

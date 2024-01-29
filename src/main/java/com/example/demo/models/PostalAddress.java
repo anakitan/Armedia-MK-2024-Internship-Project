@@ -1,85 +1,40 @@
 package com.example.demo.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "p_postal_address")
 public class PostalAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "p_postal_address_id")
     private Long id;
 
+    @Column(name = "p_street_address", unique = true)
     private String streetAddress;
 
+    @Column(name = "p_city")
     private String city;
 
+    @Column(name = "p_zip")
     private String zip;
 
+    @Column(name = "p_country")
     private String country;
 
     @ManyToOne
     @JoinColumn(name = "person_id")
     @JsonBackReference
     private Person person;
-
-    public PostalAddress() {
-    }
-
-    public PostalAddress(String streetAddress, String city, String zip, String country) {
-        this.streetAddress = streetAddress;
-        this.city = city;
-        this.zip = zip;
-        this.country = country;
-
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getZip() {
-        return zip;
-    }
-
-    public void setZip(String zip) {
-        this.zip = zip;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 }

@@ -1,10 +1,20 @@
 package com.example.demo.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ValidContactMethodValue
+@Table(name = "p_contact_method")
 public class ContactMethod {
 
     public enum ContactType {
@@ -13,66 +23,21 @@ public class ContactMethod {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "p_contact_method_id")
     private Long id;
 
+    @Column(name = "p_type")
     private ContactType type;
 
+    @Column(name = "p_value", unique = true)
     private String value;
 
+    @Column(name = "p_description")
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "person_id")
     @JsonBackReference
     private Person person;
-
-    public ContactMethod() {
-    }
-
-    public ContactMethod(ContactType type, String value, String description) {
-        this.type = type;
-        this.value = value;
-        this.description = description;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ContactType getType() {
-        return type;
-    }
-
-    public void setType(ContactType type) {
-        this.type = type;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
 }
 
