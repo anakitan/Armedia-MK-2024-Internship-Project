@@ -3,6 +3,7 @@ package com.example.demo.web;
 import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
 import com.example.demo.models.PostalAddress;
+import com.example.demo.models.exceptions.EmailNotFoundException;
 import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,15 +47,13 @@ public class PersonController {
     }
 
     @GetMapping("/byEmail")
-    public ResponseEntity<List<Person>> getPersonByEmail(@RequestParam String email) {
-        List<Person> persons = this.personService.findByEmail(email);
-        return ResponseEntity.ok().body(persons);
+    public ResponseEntity<?> getPersonByEmail(@RequestParam String email) {
+        return new ResponseEntity<>(this.personService.findByEmail(email), HttpStatus.OK);
     }
 
     @GetMapping("/byStreetAddress")
-    public ResponseEntity<List<Person>> getPersonByStreetAddress(@RequestParam String streetAddress) {
-        List<Person> persons = this.personService.findByStreetAddress(streetAddress);
-        return ResponseEntity.ok().body(persons);
+    public ResponseEntity<?> getPersonByStreetAddress(@RequestParam String streetAddress) {
+        return new ResponseEntity<>(this.personService.findByStreetAddress(streetAddress), HttpStatus.OK);
     }
 
     @GetMapping("/{personId}/details")
