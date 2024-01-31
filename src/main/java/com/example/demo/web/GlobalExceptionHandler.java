@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, IllegalArgumentException.class})
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<Object> handleValidationException(final MethodArgumentNotValidException ex) {
 
