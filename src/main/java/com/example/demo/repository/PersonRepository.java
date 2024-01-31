@@ -1,6 +1,5 @@
 package com.example.demo.repository;
 
-import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,8 +13,8 @@ import java.util.Optional;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Query("SELECT p FROM Person p JOIN p.contactMethods c WHERE c.type='EMAIL' AND c.value = :email")
-    List<Person> findByEmail(@Param("email") String email);
+    Optional<Person> findByEmail(@Param("email") String email);
 
     @Query("SELECT p FROM Person p JOIN p.postalAddresses pa WHERE pa.streetAddress = :streetAddress")
-    List<Person> findByStreetAddress(@Param("streetAddress") String streetAddress);
+    Optional<Person> findByStreetAddress(@Param("streetAddress") String streetAddress);
 }

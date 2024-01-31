@@ -9,7 +9,7 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = ContactMethodValidator.class)
 @Documented
 public @interface ValidContactMethodValue {
-    String message() default "Invalid value";
+    String message() default "Please enter a valid email and phone number";
 
     Class<?>[] groups() default {};
 

@@ -27,7 +27,7 @@ public class ContactMethodValidator implements ConstraintValidator<ValidContactM
     public boolean isValid(ContactMethod contactMethod, ConstraintValidatorContext constraintValidatorContext) {
 
         if (contactMethod == null || contactMethod.getValue() == null) {
-            return true;
+            return false;
         }
         String value = contactMethod.getValue();
         Pattern pattern;
@@ -40,6 +40,12 @@ public class ContactMethodValidator implements ConstraintValidator<ValidContactM
             return false;
         }
         Matcher matcher = pattern.matcher(value);
+        if (!matcher.matches()) {
+            constraintValidatorContext
+                    .buildConstraintViolationWithTemplate("Invalid " + contactMethod.getType() + " format")
+                    .addConstraintViolation();
+            //constraintValidatorContext.disableDefaultConstraintViolation();
+        }
         return matcher.matches();
     }
 }
