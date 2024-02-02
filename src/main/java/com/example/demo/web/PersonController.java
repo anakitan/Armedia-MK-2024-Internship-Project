@@ -3,9 +3,7 @@ package com.example.demo.web;
 import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
 import com.example.demo.models.PostalAddress;
-import com.example.demo.models.exceptions.EmailNotFoundException;
-import com.example.demo.service.PersonService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.impl.PersonServiceDaoImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,26 +17,29 @@ import java.util.Optional;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    @Autowired
-    private PersonService personService;
+    private final PersonServiceDaoImpl personServiceDao;
+
+    public PersonController(PersonServiceDaoImpl personServiceDao) {
+        this.personServiceDao = personServiceDao;
+    }
 
     @Validated
     @PostMapping("/create")
     public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
-        return this.personService.createPerson(person)
+        return this.personServiceDao.createPerson(person)
                 .map(p -> ResponseEntity.ok().body(p))
                 .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @GetMapping("/listAll")
     public ResponseEntity<List<Person>> listAllPersons() {
-        List<Person> persons = this.personService.listAllPersons();
+        List<Person> persons = this.personServiceDao.listAllPersons();
         return new ResponseEntity<>(persons, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
-        Person person = this.personService.getPersonById(id);
+        Person person = this.personServiceDao.getPersonById(id);
         if (person != null) {
             return new ResponseEntity<>(person, HttpStatus.OK);
         } else {
@@ -48,17 +49,17 @@ public class PersonController {
 
     @GetMapping("/byEmail")
     public ResponseEntity<?> getPersonByEmail(@RequestParam String email) {
-        return new ResponseEntity<>(this.personService.findByEmail(email), HttpStatus.OK);
+        return new ResponseEntity<>(this.personServiceDao.findByEmail(email), HttpStatus.OK);
     }
 
     @GetMapping("/byStreetAddress")
     public ResponseEntity<?> getPersonByStreetAddress(@RequestParam String streetAddress) {
-        return new ResponseEntity<>(this.personService.findByStreetAddress(streetAddress), HttpStatus.OK);
+        return new ResponseEntity<>(this.personServiceDao.findByStreetAddress(streetAddress), HttpStatus.OK);
     }
 
     @GetMapping("/{personId}/details")
     public ResponseEntity<Person> getPersonDetails(@PathVariable Long personId) {
-        Optional<Person> optionalPerson = this.personService.getPersonDetails(personId);
+        Optional<Person> optionalPerson = this.personServiceDao.getPersonDetails(personId);
 
         return optionalPerson.map(
                         person -> new ResponseEntity<>(person, HttpStatus.OK))
@@ -67,7 +68,7 @@ public class PersonController {
 
     @PutMapping("/{personId}/addAddress")
     public ResponseEntity<Person> addPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress newAddress) {
-        Optional<Person> updatedPerson = this.personService.addPersonAddress(personId, newAddress);
+        Optional<Person> updatedPerson = this.personServiceDao.addPersonAddress(personId, newAddress);
 
         return updatedPerson.map(person -> ResponseEntity.ok().body(person))
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -75,7 +76,7 @@ public class PersonController {
 
     @PutMapping("/{personId}/addContact")
     public ResponseEntity<Person> addPersonContactMethod(@PathVariable Long personId, @Valid @RequestBody ContactMethod newContactMethod) {
-        Optional<Person> updatedPerson = this.personService.addPersonContactMethod(personId, newContactMethod);
+        Optional<Person> updatedPerson = this.personServiceDao.addPersonContactMethod(personId, newContactMethod);
 
         return updatedPerson.map(person -> ResponseEntity.ok().body(person))
                 .orElseGet(() -> ResponseEntity.notFound().build());
