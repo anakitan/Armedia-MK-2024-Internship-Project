@@ -1,11 +1,10 @@
 package com.example.demo.web;
 
+
 import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
 import com.example.demo.models.PostalAddress;
-import com.example.demo.models.exceptions.EmailNotFoundException;
 import com.example.demo.service.PersonService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,31 +18,26 @@ import java.util.Optional;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    @Autowired
-    private PersonService personService;
+    private final PersonService personService;
+
+    public PersonController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @Validated
     @PostMapping("/create")
-    public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) {
-        return this.personService.createPerson(person)
-                .map(p -> ResponseEntity.ok().body(p))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+    public ResponseEntity<Optional<Person>> createPerson(@Valid @RequestBody Person person) {
+        return new ResponseEntity<>(this.personService.createPerson(person), HttpStatus.OK);
     }
 
     @GetMapping("/listAll")
-    public ResponseEntity<List<Person>> listAllPersons() {
-        List<Person> persons = this.personService.listAllPersons();
-        return new ResponseEntity<>(persons, HttpStatus.OK);
+    public List<Person> listAllPersons() {
+        return this.personService.listAllPersons();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable Long id) {
-        Person person = this.personService.getPersonById(id);
-        if (person != null) {
-            return new ResponseEntity<>(person, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(this.personService.getPersonById(id), HttpStatus.OK);
     }
 
     @GetMapping("/byEmail")
@@ -58,26 +52,16 @@ public class PersonController {
 
     @GetMapping("/{personId}/details")
     public ResponseEntity<Person> getPersonDetails(@PathVariable Long personId) {
-        Optional<Person> optionalPerson = this.personService.getPersonDetails(personId);
-
-        return optionalPerson.map(
-                        person -> new ResponseEntity<>(person, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return new ResponseEntity<>(this.personService.getPersonById(personId), HttpStatus.OK);
     }
 
     @PutMapping("/{personId}/addAddress")
-    public ResponseEntity<Person> addPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress newAddress) {
-        Optional<Person> updatedPerson = this.personService.addPersonAddress(personId, newAddress);
-
-        return updatedPerson.map(person -> ResponseEntity.ok().body(person))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Optional<Person>> addPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress newAddress) {
+        return new ResponseEntity<>(this.personService.addPersonAddress(personId, newAddress), HttpStatus.OK);
     }
 
     @PutMapping("/{personId}/addContact")
-    public ResponseEntity<Person> addPersonContactMethod(@PathVariable Long personId, @Valid @RequestBody ContactMethod newContactMethod) {
-        Optional<Person> updatedPerson = this.personService.addPersonContactMethod(personId, newContactMethod);
-
-        return updatedPerson.map(person -> ResponseEntity.ok().body(person))
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Optional<Person>> addPersonContactMethod(@PathVariable Long personId, @Valid @RequestBody ContactMethod newContactMethod) {
+        return new ResponseEntity<>(this.personService.addPersonContactMethod(personId, newContactMethod), HttpStatus.OK);
     }
 }
