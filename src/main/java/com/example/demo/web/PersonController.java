@@ -1,10 +1,8 @@
 package com.example.demo.web;
 
 
-import com.example.demo.models.ContactMethod;
-import com.example.demo.models.Person;
-import com.example.demo.models.PostalAddress;
-import com.example.demo.service.PersonService;
+import com.example.demo.models.*;
+import com.example.demo.service.impl.PersonServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,9 +16,9 @@ import java.util.Optional;
 @RequestMapping("/api/persons")
 public class PersonController {
 
-    private final PersonService personService;
+    private final PersonServiceImpl personService;
 
-    public PersonController(PersonService personService) {
+    public PersonController(PersonServiceImpl personService) {
         this.personService = personService;
     }
 

@@ -4,6 +4,7 @@ import com.example.demo.models.exceptions.EmailNotFoundException;
 import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.models.exceptions.PostalAddressAlreadyExistsException;
 import com.example.demo.models.exceptions.StreetAddressNotFoundException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,9 +30,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {PersonNotFoundException.class, EmailNotFoundException.class, StreetAddressNotFoundException.class, PostalAddressAlreadyExistsException.class})
+    @ExceptionHandler(value = {PersonNotFoundException.class, EmailNotFoundException.class, StreetAddressNotFoundException.class})
     @ResponseBody
     public ResponseEntity<Object> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PostalAddressAlreadyExistsException.class)
+    @ResponseBody
+    public ResponseEntity<Object> handleAlreadyExistsException(PostalAddressAlreadyExistsException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
