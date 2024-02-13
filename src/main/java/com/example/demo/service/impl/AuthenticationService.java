@@ -5,6 +5,8 @@ import com.example.demo.auth.AuthenticationResponse;
 import com.example.demo.auth.RegisterRequest;
 import com.example.demo.config.JwtService;
 import com.example.demo.models.User;
+import com.example.demo.models.exceptions.InvalidUsernameOrPasswordException;
+import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import com.example.demo.repository.dao.UserDao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,6 +25,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+
+        if (userDao.findByUsername(request.getUsername()) != null) {
+            throw new UserAlreadyExistsException();
+        }
         User user = User.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -37,12 +43,16 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+        } catch (RuntimeException ex) {
+            throw new InvalidUsernameOrPasswordException();
+        }
         User user = userDao.findByUsername(request.getUsername());
         String jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);
