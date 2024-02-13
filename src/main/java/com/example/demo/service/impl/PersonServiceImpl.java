@@ -76,14 +76,7 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress) {
         try {
-            Optional<Person> existingPersonOptional = Optional.ofNullable(personDao.getPersonById(personId));
-            if (existingPersonOptional.isPresent()) {
-                Person existingPerson = existingPersonOptional.get();
-                existingPerson.getPostalAddresses().add(newAddress);
-                return Optional.of(existingPerson);
-            } else {
-                throw new PersonNotFoundException(personId);
-            }
+            return personDao.addPersonAddress(personId, newAddress);
         } catch (DataIntegrityViolationException ex) {
             throw new PostalAddressAlreadyExistsException();
         }
