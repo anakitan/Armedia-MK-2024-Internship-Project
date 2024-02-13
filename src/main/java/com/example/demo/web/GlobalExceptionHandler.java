@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {PersonNotFoundException.class, EmailNotFoundException.class, StreetAddressNotFoundException.class, CaseFileNotFoundException.class, UsernameNotFoundException.class})
+    @ExceptionHandler(value = {PersonNotFoundException.class, EmailNotFoundException.class, StreetAddressNotFoundException.class, UsernameNotFoundException.class})
     @ResponseBody
     public ResponseEntity<Object> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
