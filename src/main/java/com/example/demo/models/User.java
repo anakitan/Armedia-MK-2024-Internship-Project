@@ -2,6 +2,8 @@ package com.example.demo.models;
 
 import com.example.demo.models.enumerations.Role;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,6 +39,7 @@ public class User implements UserDetails {
 
     @ElementCollection(targetClass = Role.class)
     @Enumerated(EnumType.STRING)
+    @Fetch(FetchMode.JOIN)
     private List<Role> roles;
 
     @OneToOne
@@ -52,7 +55,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
 
-        for (Role role : Role.values()) {
+        for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.name()));
         }
         return authorities;

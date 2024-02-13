@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .antMatchers("/api/register", "/api/authenticate")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/api/persons/create", "/api/persons/{personId}/addAddress", "/api/persons/{personId}/addContact").hasAuthority("ROLE_ADMIN")
+                .antMatchers(HttpMethod.POST, "/api/persons/create", "/api/persons/{personId}/addAddress",
+                        "/api/persons/{personId}/addContact", "/api/persons/listALl").hasAuthority("ROLE_ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/persons/listALl").hasAuthority("ROLE_USER")
                 .anyRequest()
                 .authenticated()
