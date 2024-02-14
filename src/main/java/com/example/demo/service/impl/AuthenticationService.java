@@ -6,6 +6,7 @@ import com.example.demo.auth.RegisterRequest;
 import com.example.demo.config.JwtService;
 import com.example.demo.models.User;
 import com.example.demo.models.exceptions.InvalidUsernameOrPasswordException;
+import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import com.example.demo.repository.dao.UserDao;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +27,8 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
 
-        if (userDao.findByUsername(request.getUsername()) != null) {
-            throw new UserAlreadyExistsException();
+        if (userDao.findByUsername(request.getUsername()).isPresent()) {
+            throw new UserAlreadyExistsException(String.format("User with username: %s already exists.", request.getUsername()));
         }
         User user = User.builder()
                 .username(request.getUsername())
@@ -53,7 +54,8 @@ public class AuthenticationService {
         } catch (RuntimeException ex) {
             throw new InvalidUsernameOrPasswordException();
         }
-        User user = userDao.findByUsername(request.getUsername());
+        User user = userDao.findByUsername(request.getUsername())
+                .orElseThrow(() -> new PersonNotFoundException(String.format("User: %s does not exist.", request.getUsername())));
         String jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);
     }

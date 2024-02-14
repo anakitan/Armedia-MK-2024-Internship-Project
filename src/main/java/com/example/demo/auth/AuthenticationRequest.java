@@ -1,16 +1,17 @@
 package com.example.demo.auth;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AuthenticationRequest {
 
-    private String username;
-    private String password;
+    private final String username;
+
+    private final String password;
+
+    public AuthenticationRequest(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 }

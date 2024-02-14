@@ -37,12 +37,11 @@ public class User implements UserDetails {
     @Column(name = "p_password")
     private String password;
 
-    @ElementCollection(targetClass = Role.class)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
-    @Fetch(FetchMode.JOIN)
     private List<Role> roles;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person person;
 

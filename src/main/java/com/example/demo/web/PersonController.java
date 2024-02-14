@@ -30,7 +30,7 @@ public class PersonController {
     }
 
     @GetMapping("/listAll")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public List<Person> listAllPersons() {
         return this.personService.listAllPersons();
     }

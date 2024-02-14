@@ -27,11 +27,7 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/api/register", "/api/authenticate")
-                .permitAll()
-                .antMatchers(HttpMethod.POST, "/api/persons/create", "/api/persons/{personId}/addAddress",
-                        "/api/persons/{personId}/addContact", "/api/persons/listALl").hasAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/persons/listALl").hasAuthority("ROLE_USER")
+                .antMatchers("/auth/register", "/auth/authenticate").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()

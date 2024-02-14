@@ -26,15 +26,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {PersonNotFoundException.class, EmailNotFoundException.class, StreetAddressNotFoundException.class, UsernameNotFoundException.class})
+    @ExceptionHandler(PersonNotFoundException.class)
     @ResponseBody
     public ResponseEntity<Object> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = {PostalAddressAlreadyExistsException.class, UserAlreadyExistsException.class, InvalidUsernameOrPasswordException.class})
+    @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseBody
     public ResponseEntity<Object> handleAlreadyExistsException(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidUsernameOrPasswordException.class)
+    @ResponseBody
+    public ResponseEntity<Object> handleInvalidArgumentsException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
