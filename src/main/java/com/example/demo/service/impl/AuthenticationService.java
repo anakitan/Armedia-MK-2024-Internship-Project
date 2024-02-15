@@ -1,0 +1,62 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.auth.AuthenticationRequest;
+import com.example.demo.auth.AuthenticationResponse;
+import com.example.demo.auth.RegisterRequest;
+import com.example.demo.config.JwtService;
+import com.example.demo.models.User;
+import com.example.demo.models.exceptions.InvalidUsernameOrPasswordException;
+import com.example.demo.models.exceptions.PersonNotFoundException;
+import com.example.demo.models.exceptions.UserAlreadyExistsException;
+import com.example.demo.repository.dao.UserDao;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+
+@Service
+@RequiredArgsConstructor
+public class AuthenticationService {
+
+    private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+
+    public AuthenticationResponse register(RegisterRequest request) {
+
+        if (userDao.findByUsername(request.getUsername()).isPresent()) {
+            throw new UserAlreadyExistsException(String.format("User with username: %s already exists.", request.getUsername()));
+        }
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .roles(request.getRoles())
+                .person(request.getPerson())
+                .build();
+        userDao.register(user);
+        String jwtToken = jwtService.generateToken(user);
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getUsername(),
+                            request.getPassword()
+                    )
+            );
+        } catch (RuntimeException ex) {
+            throw new InvalidUsernameOrPasswordException();
+        }
+        User user = userDao.findByUsername(request.getUsername())
+                .orElseThrow(() -> new PersonNotFoundException(String.format("User: %s does not exist.", request.getUsername())));
+        String jwtToken = jwtService.generateToken(user);
+        return new AuthenticationResponse(jwtToken);
+    }
+}

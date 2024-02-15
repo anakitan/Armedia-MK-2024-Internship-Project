@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import com.example.demo.models.enumerations.ContactType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,10 +17,6 @@ import javax.persistence.*;
 @ValidContactMethodValue
 @Table(name = "p_contact_method")
 public class ContactMethod {
-
-    public enum ContactType {
-        EMAIL, PHONE
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,10 +1,6 @@
 package com.example.demo.web;
 
-import com.example.demo.models.exceptions.EmailNotFoundException;
-import com.example.demo.models.exceptions.PersonNotFoundException;
-import com.example.demo.models.exceptions.PostalAddressAlreadyExistsException;
-import com.example.demo.models.exceptions.StreetAddressNotFoundException;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.example.demo.models.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,15 +26,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessages, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(value = {PersonNotFoundException.class, EmailNotFoundException.class, StreetAddressNotFoundException.class})
+    @ExceptionHandler(PersonNotFoundException.class)
     @ResponseBody
     public ResponseEntity<Object> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(PostalAddressAlreadyExistsException.class)
+    @ExceptionHandler(UserAlreadyExistsException.class)
     @ResponseBody
-    public ResponseEntity<Object> handleAlreadyExistsException(PostalAddressAlreadyExistsException ex) {
+    public ResponseEntity<Object> handleAlreadyExistsException(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidUsernameOrPasswordException.class)
+    @ResponseBody
+    public ResponseEntity<Object> handleInvalidArgumentsException(RuntimeException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }

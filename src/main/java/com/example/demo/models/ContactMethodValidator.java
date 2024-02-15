@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import com.example.demo.models.enumerations.ContactType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -32,9 +33,9 @@ public class ContactMethodValidator implements ConstraintValidator<ValidContactM
         String value = contactMethod.getValue();
         Pattern pattern;
 
-        if (contactMethod.getType() == ContactMethod.ContactType.EMAIL) {
+        if (contactMethod.getType() == ContactType.EMAIL) {
             pattern = Pattern.compile(emailRegex);
-        } else if (contactMethod.getType() == ContactMethod.ContactType.PHONE) {
+        } else if (contactMethod.getType() == ContactType.PHONE) {
             pattern = Pattern.compile(phoneRegex);
         } else {
             return false;
