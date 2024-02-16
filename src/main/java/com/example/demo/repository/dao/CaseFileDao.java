@@ -1,13 +1,13 @@
 package com.example.demo.repository.dao;
 
 import com.example.demo.models.CaseFile;
-import com.example.demo.models.exceptions.PersonNotFoundException;
+import com.example.demo.models.Person;
+import com.example.demo.models.dto.CaseFileDTO;
+import com.example.demo.models.dto.EntityDTOConverter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,9 +21,25 @@ public class CaseFileDao {
         this.entityManager = entityManager;
     }
 
-    public Optional<CaseFile> create(CaseFile caseFile) {
+    public Optional<CaseFileDTO> create(CaseFileDTO caseFileDTO) {
+        if (caseFileDTO == null) {
+            return Optional.empty();
+        }
+        Person person;
+        Long personId = caseFileDTO.getPersonId();
+
+        if (personId != null) {
+            person = entityManager.find(Person.class, personId);
+        } else {
+            person = EntityDTOConverter.convertToPersonEntity(caseFileDTO.getPersonDTO());
+            entityManager.persist(person);
+        }
+        CaseFile caseFile = EntityDTOConverter.convertToCaseFileEntity(caseFileDTO);
+        caseFile.setPerson(person);
         entityManager.persist(caseFile);
-        return Optional.of(caseFile);
+
+        caseFileDTO.setId(caseFile.getId());
+        return Optional.of(caseFileDTO);
     }
 
     public List<CaseFile> listAllCaseFiles() {
@@ -36,18 +52,19 @@ public class CaseFileDao {
                 .getSingleResult();
     }
 
-    public Optional<CaseFile> update(Long id, CaseFile updatedFile) {
-        Query query = entityManager.createNamedQuery("CaseFile.updateFile")
-                .setParameter("caseNumber", updatedFile.getCaseNumber())
-                .setParameter("title", updatedFile.getTitle())
-                .setParameter("incidentDate", updatedFile.getIncidentDate())
-                .setParameter("id", id);
-        query.executeUpdate();
-        CaseFile updatedCaseFile = entityManager.find(CaseFile.class, id);
-        if (updatedCaseFile != null) {
-            return Optional.of(updatedCaseFile);
-        } else {
-            throw new PersonNotFoundException(String.format("Case file with id: %d was not found.", id));
+    public Optional<CaseFile> update(Long id, CaseFileDTO updatedFileDTO) {
+        CaseFile caseFile = this.entityManager.createNamedQuery("CaseFile.findById", CaseFile.class)
+                .setParameter("id", id).getSingleResult();
+        if (updatedFileDTO.getTitle() != null) {
+            caseFile.setTitle(updatedFileDTO.getTitle());
         }
+        if (updatedFileDTO.getCaseNumber() != null) {
+            caseFile.setCaseNumber(Integer.valueOf(updatedFileDTO.getCaseNumber()));
+        }
+        if (updatedFileDTO.getIncidentDate() != null) {
+            caseFile.setIncidentDate(updatedFileDTO.getIncidentDate());
+        }
+        this.entityManager.persist(caseFile);
+        return Optional.of(caseFile);
     }
 }

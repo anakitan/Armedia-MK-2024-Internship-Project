@@ -1,16 +1,17 @@
 package com.example.demo.service;
 
 import com.example.demo.models.CaseFile;
+import com.example.demo.models.dto.CaseFileDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface CaseFileService {
-    Optional<CaseFile> createCaseFile(CaseFile caseFile);
+    Optional<CaseFileDTO> createCaseFile(CaseFileDTO caseFileDTO);
 
     List<CaseFile> listAllCaseFiles();
 
     CaseFile getCaseFileById(Long caseFileId);
 
-    Optional<CaseFile> updateFile(Long id, CaseFile caseFile);
+    Optional<CaseFile> updateFile(Long id, CaseFileDTO caseFileDTO);
 }

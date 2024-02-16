@@ -1,6 +1,7 @@
 package com.example.demo.web;
 
 import com.example.demo.models.CaseFile;
+import com.example.demo.models.dto.CaseFileDTO;
 import com.example.demo.service.impl.CaseFileServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public class CaseFileController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<Optional<CaseFile>> createCaseFile(@RequestBody CaseFile caseFile) {
-        return new ResponseEntity<>(this.caseFileService.createCaseFile(caseFile), HttpStatus.OK);
+    public ResponseEntity<Optional<CaseFileDTO>> createCaseFile(@RequestBody CaseFileDTO caseFileDTO) {
+        return new ResponseEntity<>(this.caseFileService.createCaseFile(caseFileDTO), HttpStatus.OK);
     }
 
     @GetMapping("/listAll")
@@ -38,7 +39,7 @@ public class CaseFileController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PutMapping("/{id}/update")
-    public ResponseEntity<Optional<CaseFile>> update(@PathVariable Long id, @RequestBody CaseFile caseFile) {
-        return new ResponseEntity<>(this.caseFileService.updateFile(id, caseFile), HttpStatus.OK);
+    public ResponseEntity<Optional<CaseFile>> update(@PathVariable Long id, @RequestBody CaseFileDTO caseFileDTO) {
+        return new ResponseEntity<>(this.caseFileService.updateFile(id, caseFileDTO), HttpStatus.OK);
     }
 }

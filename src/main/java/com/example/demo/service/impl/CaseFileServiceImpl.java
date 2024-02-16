@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.models.CaseFile;
+import com.example.demo.models.dto.CaseFileDTO;
 import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.repository.dao.CaseFileDao;
 import com.example.demo.service.CaseFileService;
@@ -21,8 +22,8 @@ public class CaseFileServiceImpl implements CaseFileService {
 
     @Override
     @Transactional
-    public Optional<CaseFile> createCaseFile(CaseFile caseFile) {
-        return this.caseFileDao.create(caseFile);
+    public Optional<CaseFileDTO> createCaseFile(CaseFileDTO caseFileDTO) {
+        return this.caseFileDao.create(caseFileDTO);
     }
 
     @Override
@@ -41,9 +42,9 @@ public class CaseFileServiceImpl implements CaseFileService {
 
     @Override
     @Transactional
-    public Optional<CaseFile> updateFile(Long id, CaseFile caseFile) {
+    public Optional<CaseFile> updateFile(Long id, CaseFileDTO caseFileDTO) {
         try {
-            return this.caseFileDao.update(id, caseFile);
+            return this.caseFileDao.update(id, caseFileDTO);
         } catch (RuntimeException ex) {
             throw new PersonNotFoundException(String.format("Case file with id: %d was not found.", id));
         }

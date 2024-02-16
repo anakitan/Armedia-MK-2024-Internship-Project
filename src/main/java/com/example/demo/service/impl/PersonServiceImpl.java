@@ -66,7 +66,7 @@ public class PersonServiceImpl implements PersonService {
         try {
             return Optional.ofNullable(this.personDao.getPersonById(personId));
         } catch (RuntimeException ex) {
-            throw new PersonNotFoundException(String.format("Person was not found."));
+            throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
 
@@ -75,8 +75,8 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress) {
         try {
             return personDao.addPersonAddress(personId, newAddress);
-        } catch (DataIntegrityViolationException ex) {
-            throw new UserAlreadyExistsException(String.format("Postal address: %s already exists.", newAddress));
+        } catch (RuntimeException ex) {
+            throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
 
