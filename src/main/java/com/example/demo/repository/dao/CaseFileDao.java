@@ -1,9 +1,6 @@
 package com.example.demo.repository.dao;
 
 import com.example.demo.models.CaseFile;
-import com.example.demo.models.Person;
-import com.example.demo.models.dto.CaseFileDTO;
-import com.example.demo.models.dto.EntityDTOConverter;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
@@ -21,25 +18,8 @@ public class CaseFileDao {
         this.entityManager = entityManager;
     }
 
-    public Optional<CaseFileDTO> create(CaseFileDTO caseFileDTO) {
-        if (caseFileDTO == null) {
-            return Optional.empty();
-        }
-        Person person;
-        Long personId = caseFileDTO.getPersonId();
-
-        if (personId != null) {
-            person = entityManager.find(Person.class, personId);
-        } else {
-            person = EntityDTOConverter.convertToPersonEntity(caseFileDTO.getPersonDTO());
-            entityManager.persist(person);
-        }
-        CaseFile caseFile = EntityDTOConverter.convertToCaseFileEntity(caseFileDTO);
-        caseFile.setPerson(person);
+    public void create(CaseFile caseFile) {
         entityManager.persist(caseFile);
-
-        caseFileDTO.setId(caseFile.getId());
-        return Optional.of(caseFileDTO);
     }
 
     public List<CaseFile> listAllCaseFiles() {
@@ -52,18 +32,7 @@ public class CaseFileDao {
                 .getSingleResult();
     }
 
-    public Optional<CaseFile> update(Long id, CaseFileDTO updatedFileDTO) {
-        CaseFile caseFile = this.entityManager.createNamedQuery("CaseFile.findById", CaseFile.class)
-                .setParameter("id", id).getSingleResult();
-        if (updatedFileDTO.getTitle() != null) {
-            caseFile.setTitle(updatedFileDTO.getTitle());
-        }
-        if (updatedFileDTO.getCaseNumber() != null) {
-            caseFile.setCaseNumber(Integer.valueOf(updatedFileDTO.getCaseNumber()));
-        }
-        if (updatedFileDTO.getIncidentDate() != null) {
-            caseFile.setIncidentDate(updatedFileDTO.getIncidentDate());
-        }
+    public Optional<CaseFile> update(CaseFile caseFile) {
         this.entityManager.persist(caseFile);
         return Optional.of(caseFile);
     }

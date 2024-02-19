@@ -18,7 +18,7 @@ public class EntityDTOConverter {
         return person;
     }
 
-    public static CaseFile convertToCaseFileEntity(CaseFileDTO caseFileDTO) {
+    public static CaseFile convertToCaseFileEntity(CaseFileDTO caseFileDTO, Person personDTO) {
         if (caseFileDTO == null) {
             return null;
         }
@@ -26,7 +26,25 @@ public class EntityDTOConverter {
         caseFile.setCaseNumber(Integer.valueOf(caseFileDTO.getCaseNumber()));
         caseFile.setTitle(caseFileDTO.getTitle());
         caseFile.setIncidentDate(caseFileDTO.getIncidentDate());
+        if (personDTO != null) {
+            Person person = convertToPersonEntity(personDTO);
+            caseFile.setPerson(person);
+        }
         return caseFile;
+    }
+
+    private static Person convertToPersonEntity(Person personDTO) {
+        if (personDTO == null) {
+            return null;
+        }
+        Person person = new Person();
+        person.setGivenName(personDTO.getGivenName());
+        person.setLastName(personDTO.getLastName());
+        person.setDateOfBirth(personDTO.getDateOfBirth());
+        person.setPlaceOfBirth(personDTO.getPlaceOfBirth());
+        person.setPostalAddresses(personDTO.getPostalAddresses());
+        person.setContactMethods(personDTO.getContactMethods());
+        return person;
     }
 
     public static CaseFileDTO convertToCaseFileDTO(CaseFile caseFile) {
