@@ -1,13 +1,11 @@
 package com.example.demo.repository.dao;
 
 import com.example.demo.models.User;
+import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.util.Optional;
 
 @Component
@@ -33,6 +31,14 @@ public class UserDao {
 
     @Transactional
     public void register(User user) {
-        entityManager.persist(user);
+        Query queryByUsername = entityManager.createNamedQuery("User.findByUsername").setParameter("username", user.getUsername());
+        if (queryByUsername.getResultList().isEmpty()) {
+            try {
+                entityManager.persist(user);
+            } catch (PersistenceException e) {
+                throw new UserAlreadyExistsException("Duplicate entry for email or street address.");
+            }
+        } else throw new UserAlreadyExistsException("Username already exists.");
+        this.entityManager.persist(user);
     }
 }

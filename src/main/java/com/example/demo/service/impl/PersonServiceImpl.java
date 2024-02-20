@@ -11,6 +11,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,11 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public Optional<Person> createPerson(Person person) {
-        return personDao.createPerson(person);
+        try {
+            return personDao.createPerson(person);
+        } catch (EntityExistsException ex) {
+            throw new UserAlreadyExistsException("Street address or contact method field already exists.");
+        }
     }
 
     @Override
@@ -38,7 +44,7 @@ public class PersonServiceImpl implements PersonService {
     public Person getPersonById(Long id) {
         try {
             return this.personDao.getPersonById(id);
-        } catch (RuntimeException ex) {
+        } catch (NoResultException ex) {
             throw new PersonNotFoundException(String.format("Person with id: %d was not found.", id));
         }
     }
@@ -47,7 +53,7 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> findByEmail(String email) {
         try {
             return this.personDao.findByEmail(email);
-        } catch (RuntimeException ex) {
+        } catch (NoResultException ex) {
             throw new PersonNotFoundException(String.format("Person with email: %s was not found.", email));
         }
     }
@@ -56,7 +62,7 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> findByStreetAddress(String streetAddress) {
         try {
             return this.personDao.findByStreetAddress(streetAddress);
-        } catch (RuntimeException ex) {
+        } catch (NoResultException ex) {
             throw new PersonNotFoundException(String.format("Person with street address: %s was not found.", streetAddress));
         }
     }
@@ -65,8 +71,8 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> getPersonDetails(Long personId) {
         try {
             return Optional.ofNullable(this.personDao.getPersonById(personId));
-        } catch (RuntimeException ex) {
-            throw new PersonNotFoundException(String.format("Person was not found."));
+        } catch (NoResultException ex) {
+            throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
 
@@ -75,8 +81,8 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress) {
         try {
             return personDao.addPersonAddress(personId, newAddress);
-        } catch (DataIntegrityViolationException ex) {
-            throw new UserAlreadyExistsException(String.format("Postal address: %s already exists.", newAddress));
+        } catch (NoResultException ex) {
+            throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
 
@@ -85,7 +91,7 @@ public class PersonServiceImpl implements PersonService {
     public Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod) {
         try {
             return this.personDao.addPersonContactMethod(personId, contactMethod);
-        } catch (RuntimeException ex) {
+        } catch (NoResultException ex) {
             throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
