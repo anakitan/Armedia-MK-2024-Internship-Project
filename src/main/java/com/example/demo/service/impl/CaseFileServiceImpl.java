@@ -10,7 +10,9 @@ import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import com.example.demo.repository.dao.CaseFileDao;
 import com.example.demo.repository.dao.PersonDao;
 import com.example.demo.service.CaseFileService;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.example.demo.web.CaseFileController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,8 @@ import java.util.Optional;
 
 @Service
 public class CaseFileServiceImpl implements CaseFileService {
+
+    Logger logger = LoggerFactory.getLogger(CaseFileController.class);
 
     private final CaseFileDao caseFileDao;
     private final PersonDao personDao;
@@ -34,6 +38,7 @@ public class CaseFileServiceImpl implements CaseFileService {
     @Transactional
     public Optional<CaseFileDTO> createCaseFile(CaseFileDTO caseFileDTO) {
         try {
+            logger.info("createCaseFile method in service class started");
             if (caseFileDTO == null) {
                 return Optional.empty();
             }
@@ -68,14 +73,22 @@ public class CaseFileServiceImpl implements CaseFileService {
 
     @Override
     public List<CaseFile> listAllCaseFiles() {
-        return this.caseFileDao.listAllCaseFiles();
+        try {
+            logger.info("listAllCaseFiles method in service class started");
+            return this.caseFileDao.listAllCaseFiles();
+        } catch (NoResultException ex) {
+            logger.error("Exception in listAllCaseFiles of service class");
+            throw new PersonNotFoundException(String.format("The list of case files was not found."));
+        }
     }
 
     @Override
     public CaseFile getCaseFileById(Long caseFileId) {
         try {
+            logger.info("getCaseFileById method in service class started");
             return this.caseFileDao.getCaseFileById(caseFileId);
         } catch (NoResultException ex) {
+            logger.error("Exception in getCaseFileById of service class");
             throw new PersonNotFoundException(String.format("Case file with id: %d was not found.", caseFileId));
         }
     }
@@ -84,6 +97,7 @@ public class CaseFileServiceImpl implements CaseFileService {
     @Transactional
     public Optional<CaseFile> updateFile(Long id, CaseFileDTO caseFileDTO) {
         try {
+            logger.info("update method from CaseFile in service class started");
             CaseFile caseFile = this.caseFileDao.getCaseFileById(id);
 
             if (caseFileDTO.getTitle() != null) {
@@ -97,6 +111,7 @@ public class CaseFileServiceImpl implements CaseFileService {
             }
             return this.caseFileDao.update(caseFile);
         } catch (NoResultException ex) {
+            logger.error("Exception in update method from CaseFile of service class");
             throw new PersonNotFoundException(String.format("Case file with id: %d was not found.", id));
         }
     }
