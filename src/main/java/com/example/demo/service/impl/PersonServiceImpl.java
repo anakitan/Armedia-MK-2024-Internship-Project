@@ -7,7 +7,9 @@ import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import com.example.demo.repository.dao.PersonDao;
 import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.service.PersonService;
-import org.springframework.dao.DataIntegrityViolationException;
+import com.example.demo.web.PersonController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import java.util.Optional;
 @Service
 public class PersonServiceImpl implements PersonService {
 
+    Logger logger = LoggerFactory.getLogger(PersonController.class);
+
     private final PersonDao personDao;
 
     public PersonServiceImpl(PersonDao personDao) {
@@ -29,6 +33,7 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public Optional<Person> createPerson(Person person) {
         try {
+            logger.info("createPerson method in service class started");
             return personDao.createPerson(person);
         } catch (EntityExistsException ex) {
             throw new UserAlreadyExistsException("Street address or contact method field already exists.");
@@ -37,14 +42,22 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public List<Person> listAllPersons() {
-        return this.personDao.listAllPersons();
+        try {
+            logger.info("listAllPersons method in service class started");
+            return this.personDao.listAllPersons();
+        } catch (NoResultException ex) {
+            logger.error("Exception in listAllPersons of service class");
+            throw new PersonNotFoundException(String.format("The list of persons was not found"));
+        }
     }
 
     @Override
     public Person getPersonById(Long id) {
         try {
+            logger.info("getPersonById method in service class started");
             return this.personDao.getPersonById(id);
         } catch (NoResultException ex) {
+            logger.error("Exception in getPersonById of service class");
             throw new PersonNotFoundException(String.format("Person with id: %d was not found.", id));
         }
     }
@@ -52,8 +65,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Optional<Person> findByEmail(String email) {
         try {
+            logger.info("findByEmail method in service class started");
             return this.personDao.findByEmail(email);
         } catch (NoResultException ex) {
+            logger.error("Exception in findByEmail of service class");
             throw new PersonNotFoundException(String.format("Person with email: %s was not found.", email));
         }
     }
@@ -61,8 +76,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Optional<Person> findByStreetAddress(String streetAddress) {
         try {
+            logger.info("findByStreetAddress method in service class started");
             return this.personDao.findByStreetAddress(streetAddress);
         } catch (NoResultException ex) {
+            logger.error("Exception in findByStreetAddress of service class");
             throw new PersonNotFoundException(String.format("Person with street address: %s was not found.", streetAddress));
         }
     }
@@ -70,8 +87,10 @@ public class PersonServiceImpl implements PersonService {
     @Override
     public Optional<Person> getPersonDetails(Long personId) {
         try {
+            logger.info("getPersonDetails method in service class started");
             return Optional.ofNullable(this.personDao.getPersonById(personId));
         } catch (NoResultException ex) {
+            logger.error("Exception in getPersonDetails of service class");
             throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
@@ -80,8 +99,10 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress) {
         try {
+            logger.info("addPersonAddress method in service class started");
             return personDao.addPersonAddress(personId, newAddress);
         } catch (NoResultException ex) {
+            logger.error("Exception in addPersonAddress of service class");
             throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
@@ -90,8 +111,10 @@ public class PersonServiceImpl implements PersonService {
     @Transactional
     public Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod) {
         try {
+            logger.info("addPersonContactMethod method in service class started");
             return this.personDao.addPersonContactMethod(personId, contactMethod);
         } catch (NoResultException ex) {
+            logger.error("Exception in addPersonContactMethod of service class");
             throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
         }
     }
