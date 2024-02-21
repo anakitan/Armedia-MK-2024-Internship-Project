@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
 import com.example.demo.models.PostalAddress;
-import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import com.example.demo.repository.dao.PersonDao;
 import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.service.PersonService;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
 import java.util.List;
 import java.util.Optional;
@@ -32,12 +30,8 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public Optional<Person> createPerson(Person person) {
-        try {
-            logger.info("createPerson method in service class started");
-            return personDao.createPerson(person);
-        } catch (EntityExistsException ex) {
-            throw new UserAlreadyExistsException("Street address or contact method field already exists.");
-        }
+        logger.info("createPerson method in service class started");
+        return this.personDao.createPerson(person);
     }
 
     @Override
@@ -98,24 +92,16 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress) {
-        try {
-            logger.info("addPersonAddress method in service class started");
-            return personDao.addPersonAddress(personId, newAddress);
-        } catch (NoResultException ex) {
-            logger.error("Exception in addPersonAddress of service class");
-            throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
-        }
+        logger.info("addPersonAddress method in service class started");
+        return Optional.ofNullable(this.personDao.addPersonAddress(personId, newAddress)
+                .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId))));
     }
 
     @Override
     @Transactional
     public Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod) {
-        try {
-            logger.info("addPersonContactMethod method in service class started");
-            return this.personDao.addPersonContactMethod(personId, contactMethod);
-        } catch (NoResultException ex) {
-            logger.error("Exception in addPersonContactMethod of service class");
-            throw new PersonNotFoundException(String.format("Person with id: %d was not found.", personId));
-        }
+        logger.info("addPersonContactMethod method in service class started");
+        return Optional.ofNullable(this.personDao.addPersonContactMethod(personId, contactMethod)
+                .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId))));
     }
 }

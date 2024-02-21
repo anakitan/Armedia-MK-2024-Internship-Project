@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +28,7 @@ public class CaseFileController {
 
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @PostMapping("/create")
-    public ResponseEntity<Optional<CaseFileDTO>> createCaseFile(@RequestBody CaseFileDTO caseFileDTO) {
+    public ResponseEntity<Optional<CaseFileDTO>> createCaseFile(@RequestBody @Valid CaseFileDTO caseFileDTO) {
         logger.info("Starting createCaseFile method with info log level");
         return new ResponseEntity<>(this.caseFileService.createCaseFile(caseFileDTO), HttpStatus.OK);
     }
