@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,5 +29,6 @@ public class PersonDTO {
 
     private List<PostalAddress> postalAddresses;
 
+    @Valid
     private List<ContactMethod> contactMethods;
 }

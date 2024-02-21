@@ -5,6 +5,7 @@ import com.example.demo.models.Person;
 import com.example.demo.models.dto.CaseFileDTO;
 import com.example.demo.models.dto.EntityDTOConverter;
 import com.example.demo.models.dto.PersonDTO;
+import com.example.demo.models.exceptions.InvalidUsernameOrPasswordException;
 import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.models.exceptions.UserAlreadyExistsException;
 import com.example.demo.repository.dao.CaseFileDao;
@@ -13,11 +14,12 @@ import com.example.demo.service.CaseFileService;
 import com.example.demo.web.CaseFileController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +68,8 @@ public class CaseFileServiceImpl implements CaseFileService {
             caseFileDTO.setId(caseFile.getId());
 
             return Optional.of(caseFileDTO);
-        } catch (EntityExistsException ex) {
+        } catch (PersistenceException ex) {
+            logger.info("Exception at createCaseFile method in service class for duplicate entry.");
             throw new UserAlreadyExistsException(String.format("Case file already exists."));
         }
     }
