@@ -1,6 +1,7 @@
 package com.example.demo.web;
 
 import com.example.demo.models.*;
+import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.service.impl.PersonServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,6 @@ public class PersonController {
     }
 
     @GetMapping("/listAll")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public List<Person> listAllPersons() {
         logger.info("Starting listAllPersons method with info log level");
         return this.personService.listAllPersons();
@@ -72,10 +72,44 @@ public class PersonController {
         return new ResponseEntity<>(this.personService.addPersonAddress(personId, newAddress), HttpStatus.OK);
     }
 
+    @PutMapping("/{personId}/editAddress")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Optional<Person>> editPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress editedAddress) {
+        logger.info("Starting editPersonAddress method with info log level");
+        return new ResponseEntity<>(this.personService.editPersonAddress(personId, editedAddress), HttpStatus.OK);
+    }
+
     @PutMapping("/{personId}/addContact")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Optional<Person>> addPersonContactMethod(@PathVariable Long personId, @Valid @RequestBody ContactMethod newContactMethod) {
         logger.info("Starting addPersonContactMethod method with info log level");
         return new ResponseEntity<>(this.personService.addPersonContactMethod(personId, newContactMethod), HttpStatus.OK);
+    }
+
+    @PutMapping("/{personId}/editContact")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Optional<Person>> editPersonContact(@PathVariable Long personId, @RequestBody ContactMethod editedContact) {
+        logger.info("Starting editPersonContact method with info log level");
+        return new ResponseEntity<>(this.personService.editPersonContact(personId, editedContact), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{personId}/deleteAddress/{addressId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Void> deletePostalAddress(@PathVariable Long personId, @PathVariable Long addressId) {
+        logger.info("Starting deletePostalAddress method with info log level");
+        this.personService.deletePostalAddress(personId, addressId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{personId}/deleteContact/{contactId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<String> deleteContactMethod(@PathVariable Long personId, @PathVariable Long contactId) {
+        logger.info("Starting deleteContactMethod method with info log level");
+        try {
+            this.personService.deleteContactMethod(personId, contactId);
+            return new ResponseEntity<>("Contact method deleted successfully", HttpStatus.OK);
+        } catch (PersonNotFoundException e) {
+            return new ResponseEntity<>("Contact method not found", HttpStatus.NOT_FOUND);
+        }
     }
 }

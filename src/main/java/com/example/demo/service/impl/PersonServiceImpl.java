@@ -1,8 +1,10 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.models.CaseFile;
 import com.example.demo.models.ContactMethod;
 import com.example.demo.models.Person;
 import com.example.demo.models.PostalAddress;
+import com.example.demo.models.dto.CaseFileDTO;
 import com.example.demo.repository.dao.PersonDao;
 import com.example.demo.models.exceptions.PersonNotFoundException;
 import com.example.demo.service.PersonService;
@@ -99,9 +101,38 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional
+    public Optional<Person> editPersonAddress(Long personId, PostalAddress editedAddress) {
+        logger.info("editPersonAddress method in service class started");
+        return Optional.ofNullable(this.personDao.editPersonAddress(personId, editedAddress)
+                .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId))));
+    }
+
+    @Override
+    @Transactional
     public Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod) {
         logger.info("addPersonContactMethod method in service class started");
         return Optional.ofNullable(this.personDao.addPersonContactMethod(personId, contactMethod)
                 .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId))));
+    }
+
+    @Override
+    public Optional<Person> editPersonContact(Long personId, ContactMethod editedContact) {
+        logger.info("editPersonContact method in service class started");
+        return Optional.ofNullable(this.personDao.editPersonContact(personId, editedContact))
+                .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId)));
+    }
+
+    @Override
+    @Transactional
+    public void deletePostalAddress(Long personId, Long addressId) {
+        logger.info("deletePostalAddress method in service class started");
+        this.personDao.deletePostalAddress(personId, addressId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteContactMethod(Long personId, Long contactId) {
+        logger.info("deleteContactMethod method in service class started");
+        this.personDao.deleteContactMethod(personId, contactId);
     }
 }

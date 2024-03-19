@@ -14,6 +14,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "p_postal_address")
+@NamedQuery(name = "PostalAddress.findById", query = "SELECT pa FROM PostalAddress pa WHERE pa.id = :id")
 public class PostalAddress {
 
     @Id
