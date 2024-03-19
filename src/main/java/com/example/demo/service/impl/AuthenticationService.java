@@ -29,7 +29,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public User register(RegisterRequest request) {
 
         if (userDao.findByUsername(request.getUsername()).isPresent()) {
             logger.error("Exception in register method from AuthenticationService for duplicate user");
@@ -43,10 +43,12 @@ public class AuthenticationService {
                 .person(request.getPerson())
                 .build();
         userDao.register(user);
-        String jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        return user;
+//       String jwtToken = jwtService.generateToken(user);
+//       return AuthenticationResponse.builder()
+//               .token(jwtToken)
+//               .build();
+//       return String.format("User with username %s has been registered successfully.", user.getUsername());
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {

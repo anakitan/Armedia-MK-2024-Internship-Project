@@ -15,5 +15,9 @@ public interface PersonService {
     Optional<Person> findByStreetAddress(String streetAddress);
     Optional<Person> getPersonDetails(Long personId);
     Optional<Person> addPersonAddress(Long personId, PostalAddress newAddress);
+    Optional<Person> editPersonAddress(Long personId, PostalAddress editedAddress);
     Optional<Person> addPersonContactMethod(Long personId, ContactMethod contactMethod);
+    Optional<Person> editPersonContact(Long personId, ContactMethod editedContact);
+    void deletePostalAddress(Long personId, Long addressId);
+    void deleteContactMethod(Long personId, Long contactId);
 }

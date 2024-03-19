@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -34,6 +35,7 @@ public class CaseFile {
     private String title;
 
     @Column(name = "p_incident_date")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date incidentDate;
 
     @OneToOne(cascade = CascadeType.ALL)
