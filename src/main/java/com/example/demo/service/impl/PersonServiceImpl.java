@@ -101,7 +101,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     @Transactional
-    public Optional<Person> editPersonAddress(Long personId, PostalAddress editedAddress) {
+    public Optional<PostalAddress> editPersonAddress(Long personId, PostalAddress editedAddress) {
         logger.info("editPersonAddress method in service class started");
         return Optional.ofNullable(this.personDao.editPersonAddress(personId, editedAddress)
                 .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId))));
@@ -116,7 +116,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Optional<Person> editPersonContact(Long personId, ContactMethod editedContact) {
+    public Optional<ContactMethod> editPersonContact(Long personId, ContactMethod editedContact) {
         logger.info("editPersonContact method in service class started");
         return Optional.ofNullable(this.personDao.editPersonContact(personId, editedContact))
                 .orElseThrow(() -> new PersonNotFoundException(String.format("Person with id: %d was not found.", personId)));

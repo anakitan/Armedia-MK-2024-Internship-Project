@@ -74,7 +74,7 @@ public class PersonController {
 
     @PutMapping("/{personId}/editAddress")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Optional<Person>> editPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress editedAddress) {
+    public ResponseEntity<Optional<PostalAddress>> editPersonAddress(@PathVariable Long personId, @RequestBody PostalAddress editedAddress) {
         logger.info("Starting editPersonAddress method with info log level");
         return new ResponseEntity<>(this.personService.editPersonAddress(personId, editedAddress), HttpStatus.OK);
     }
@@ -88,7 +88,7 @@ public class PersonController {
 
     @PutMapping("/{personId}/editContact")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<Optional<Person>> editPersonContact(@PathVariable Long personId, @RequestBody ContactMethod editedContact) {
+    public ResponseEntity<Optional<ContactMethod>> editPersonContact(@PathVariable Long personId, @RequestBody ContactMethod editedContact) {
         logger.info("Starting editPersonContact method with info log level");
         return new ResponseEntity<>(this.personService.editPersonContact(personId, editedContact), HttpStatus.OK);
     }

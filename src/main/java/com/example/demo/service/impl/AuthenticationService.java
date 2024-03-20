@@ -44,11 +44,6 @@ public class AuthenticationService {
                 .build();
         userDao.register(user);
         return user;
-//       String jwtToken = jwtService.generateToken(user);
-//       return AuthenticationResponse.builder()
-//               .token(jwtToken)
-//               .build();
-//       return String.format("User with username %s has been registered successfully.", user.getUsername());
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
