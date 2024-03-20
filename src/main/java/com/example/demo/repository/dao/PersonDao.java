@@ -83,51 +83,7 @@ public class PersonDao {
         }
     }
 
-//    public Optional<Person> editPersonAddress(Long personId, Long addressId, PostalAddress editedAddress) {
-//        TypedQuery<Person> queryById = entityManager.createNamedQuery(
-//                "Person.findById", Person.class).setParameter("id", personId);
-//        try {
-//            Person person = queryById.getSingleResult();
-//
-//            PostalAddress existingAddress = findPostalAddressById(person, addressId);
-//            if (existingAddress != null) {
-//                if (editedAddress.getStreetAddress() != null) {
-//                    existingAddress.setStreetAddress(editedAddress.getStreetAddress());
-//                }
-//                if (editedAddress.getCity() != null) {
-//                    existingAddress.setCity(editedAddress.getCity());
-//                }
-//                if (editedAddress.getZip() != null) {
-//                    existingAddress.setZip(editedAddress.getZip());
-//                }
-//                if (editedAddress.getCountry() != null) {
-//                    existingAddress.setCountry(editedAddress.getCountry());
-//                }
-//
-//                entityManager.persist(person);
-//                return Optional.of(person);
-//            } else {
-//                logger.error("Postal address not found for editing.");
-//                throw new PersonNotFoundException(String.format("Postal address with id: %d was not found.", addressId));
-//            }
-//        } catch (NoResultException e) {
-//            logger.error("Exception at editPersonAddress method for not found entry.");
-//            return Optional.empty();
-//        } catch (PersistenceException e) {
-//            logger.error("Exception at editPersonAddress method for duplicate entry.");
-//            throw new UserAlreadyExistsException("Duplicate entry for street address.");
-//        }
-//    }
-//    private PostalAddress findPostalAddressById(Person person, Long addressId) {
-//        for (PostalAddress existingAddress : person.getPostalAddresses()) {
-//            if (existingAddress.getId().equals(addressId)) {
-//                return existingAddress;
-//            }
-//        }
-//        return null;
-//    }
-
-    public Optional<Person> editPersonAddress(Long personId, PostalAddress editedAddress) {
+    public Optional<PostalAddress> editPersonAddress(Long personId, PostalAddress editedAddress) {
         TypedQuery<Person> queryById = entityManager.createNamedQuery(
                 "Person.findById", Person.class).setParameter("id", personId);
         try {
@@ -149,8 +105,8 @@ public class PersonDao {
                     existingAddress.setCountry(editedAddress.getCountry());
                 }
 
-                entityManager.persist(person);
-                return Optional.of(person);
+                entityManager.persist(existingAddress);
+                return Optional.of(existingAddress);
             } else {
                 logger.error("Postal address not found for editing.");
                 throw new PersonNotFoundException(String.format("Postal address not found for person with id: %d", personId));
@@ -181,7 +137,7 @@ public class PersonDao {
         }
     }
 
-    public Optional<Person> editPersonContact(Long personId, ContactMethod editedContact) {
+    public Optional<ContactMethod> editPersonContact(Long personId, ContactMethod editedContact) {
         TypedQuery<Person> queryById = entityManager.createNamedQuery(
                 "Person.findById", Person.class).setParameter("id", personId);
         try {
@@ -200,8 +156,8 @@ public class PersonDao {
                     existingContact.setDescription(editedContact.getDescription());
                 }
 
-                entityManager.persist(person);
-                return Optional.of(person);
+                entityManager.persist(existingContact);
+                return Optional.of(existingContact);
             } else {
                 logger.error("Contact method not found for editing.");
                 throw new PersonNotFoundException(String.format("Contact method not found for person with id: %d", personId));
@@ -243,22 +199,6 @@ public class PersonDao {
             logger.error("Exception at deletePostalAddress method for persistence error.");
             throw e;
         }
-//        TypedQuery<Person> queryPersonById = entityManager.createNamedQuery(
-//                "Person.findById", Person.class).setParameter("id", personId);
-//        TypedQuery<PostalAddress> queryAddressById = entityManager.createNamedQuery(
-//                "PostalAddress.findById", PostalAddress.class).setParameter("id", postalAddress.getId());
-//        try {
-//            Person person = queryPersonById.getSingleResult();
-//            PostalAddress address = queryAddressById.getSingleResult();
-//            person.getPostalAddresses().remove(address);
-//            entityManager.remove(address);
-//            return Optional.of(person);
-//        } catch (NoResultException e) {
-//            return Optional.empty();
-//        } catch (PersistenceException e) {
-//            logger.error(e.getMessage());
-//            throw new UserAlreadyExistsException("Duplicate entry for street address.");
-//        }
     }
 
     public void deleteContactMethod(Long personId, Long contactId) {
